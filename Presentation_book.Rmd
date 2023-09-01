@@ -81,7 +81,7 @@ summary(df_2)
 
 ![](https://github.com/tvaidic/capstone1/blob/main/coffee%20per%20country.PNG)
 
-![](C:\\Users\\User\\Documents\\Bonfire\\Week8\\Capstone1)
+![](https://github.com/tvaidic/capstone1/blob/main/processing%20method.PNG)
 
 ![](C:\\Users\\User\\Documents\\Bonfire\\Week8\\Capstone1)
 
