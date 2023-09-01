@@ -83,9 +83,7 @@ summary(df_2)
 
 ![](https://github.com/tvaidic/capstone1/blob/main/processing%20method.PNG)
 
-![](C:\\Users\\User\\Documents\\Bonfire\\Week8\\Capstone1)
-
-![](C:\\Users\\User\\Documents\\Bonfire\\Week8\\Capstone1)
+![](https://github.com/tvaidic/capstone1/blob/main/rating%20per%20country.PNG)
 
 ### We were able to see all the corellations in our data and now lets complete a few statistical tests within R to back up the evidence on our relationships. In order to do this we will use the kruskal test function to display all of our descriptive statistics
 
