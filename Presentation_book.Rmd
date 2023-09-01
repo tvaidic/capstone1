@@ -1,0 +1,102 @@
+---
+title: "Capstone1_presentation"
+author: "Vaidic Trivedi"
+date: "2023-08-28"
+output: html_document
+---
+
+# An Analysis on Coffee Producers
+
+### Today using the Coffee Quality Data set we will examine various coffee bean vendors around the world and determine which factors should be looked at when deciding where to source your coffee from. So step by step lets will walk through how we will use Data analysis to test what factors affect the quality of our coffee. The first hypothesis is that the country the coffee is produced in affects the quality of the coffee. The opposite of this will be known as our null hypothesis, which suggests that there is no correlation between country of origin and the overall quality of coffee.
+
+### \* Lets first read in the data and adjust the column names so that they are easier to work with
+
+### \* Lets also convert the dataframe into a tibble object which we use in R to manipulate and model the data
+
+```{r}
+library(dplyr)
+#Read in the data
+df <- read.csv('C:/Users/User/Documents/Bonfire/Week8/Capstone1/df_arabica_clean.csv')
+#Adjust column names
+colnames(df)<-gsub("\\.", "_", tolower(colnames(df)))
+#Changing the data into a tibble object
+df<- as_tibble(df)
+#Look at the first ten entries of data
+head(df,10)
+#Examining the type of data in each column
+sapply(df,class)
+```
+
+### After seeing the data and data types of each column, we can see what possibly affects our coffee quality (independent variables), and what factors go into our quality and our overall quality score (dependent variable).
+
+### Our independent variables we choose to look at are as follows:
+
+#### \* Country of origin
+
+#### \* Processing method
+
+### The dependent variable we will look at is overall cup quality since it is an average of all factors and total cup points which is a sum of the other factors. Additionally, we will look at the category 2 defects which are defects observed after the coffee is tasted.
+
+### Before we can look at our data we have to make some changes:
+
+#### \* There are a lot of null values inside of the data so lets see if they need to be removed
+
+#### \* The bag weight column is listed as a character value which makes it hard to compare the values, so it must be converted into integers.
+
+#### \* Aditionally the x and id column are repetitive and the ico number column is mostly empty so lets remove the two columns
+
+#### \* Finally lets multiply the bag weight and number of bags column to find the total amount of beans harvested (in kilograms)
+
+```{r}
+# Remove the "kg" from the bag weight class and change the data type to integer
+df$bag_weight <- as.integer(gsub('kg','', df$bag_weight))
+# Remove the to columns that are unnecessary
+df_2<-subset(df, select = -c(x, ico_number))
+# Change the empty values into na values and remove the na values
+df_2 <- df_2 %>%
+  mutate_all(~ifelse(.=="",NA,.))
+df_2<-na.omit(df_2)
+# Create the new column
+df_2<- df_2 %>%
+  mutate(total_beans = bag_weight * number_of_bags)
+```
+
+### Now that our data is cleaned up we can start examining the relationships between our variables. Lets use the summary function to view the descriptive statistics in the dataset. Upon visualizing the data a couple additional hypotheses can be made.
+
+#### \* The processing method affects the overall rating of the coffee
+
+#### \* Sotuh America grows more beans than the rest of the world
+
+#### \* The processing method does cause defects in the future
+
+### Lets move the data into excell and build pivot tables to see the relationships between our variables.
+
+```{r}
+summary(df_2)
+```
+
+### We were able to see all the corellations in our data and now lets complete a few statistical tests within R to back up the evidence on our relationships. In order to do this we will use the kruskal test function to display all of our descriptive statistics
+
+```{r}
+# Correlation between coffee quality and country
+kruskal_test_result <- kruskal.test(country_of_origin ~ overall, data = df_2)
+kruskal_test_result
+# Correlation test between coffee quality and processing method
+kruskal_test_result_2 <- kruskal.test(processing_method ~ overall, data = df_2)
+kruskal_test_result_2
+# Correlation test between processing method and category two defects
+kruskal_test_result_3 <- kruskal.test(processing_method ~ category_two_defects, data = df_2)
+kruskal_test_result_3
+```
+
+### So here we completed three different tests, lets go through each test and see what each value means. The reason we chose the Kruskal-Walins rank sum test each test takes a categorical variable(a non-numeric variable that can be broken up into categories) and a numeric variable. Then the test measures the variablity between the groups, the test then returns the distribution of the numeric column. The greater the value the higher distribution. The df, or the degrees of freedom, represents the different categories in the column. The p-value represents the overall statistical significance, if the p-value is lower than or close to .05 then it is considered statistically significant. Lets look at each test instance:
+
+#### \* The first test looks at the relationship between the coffee quality and country. The main thing to look at is the p-value, because it is signifficantly higher than our base value of .05 meaning that there is no real corellation between the country and the cup quality. This means that we fail to reject our null hypothesis.
+
+#### \* The second test looks at the relationship between the processing method and overall coffee quality. The p-value, though lower than the previous p-value, is still higher than our base value of .05 meaning that there is no corellation between the processing method and the cup quality. This means that we once again fail to reject our null hypothesis.
+
+#### \* The third test observest the corellation between the processing method and category 2 defects. We chose this relationship to discover if there was a best method to process the beans. The p value once again is still higher than the threshold value meaning that the processing method doesnt cause any significant defects with the coffee.
+
+### From our data we may feel that because there was no real correlation in any of the point there were no actionable insights but in fact its quite the opposite. From the first test and the charts we can see that the country of origin does not affect the quality of the coffee in a significant manner. However, this means that our company can source coffee from anywhere in the world. Keeping in mind the laws in the US require beans to be sourced organically which means that they primarly must come from South America. This is great because of all the countries the countries in South and Central America produce more coffee than the rest of the world.
+### Through the second test and the third we wanted to observe if the processing method had any effect on the coffee quality and final flavor after production. There was no relationship obeserved in either but this means that we are free to use any processing method we want.
+### So what does this all mean? The ammount of freedom provided is great for our company it means that we can source coffee from anywhere and process it however we want. There may be opportunity to cut costs within these parameters. Aditionally we can further spend time testing how blends and styles of coffee and brewing methods affect the overall quality. Other areas that can be tested on in the future is altitude affects on any categories and posibbly even find the optimal conditions to grow the best possible coffee.

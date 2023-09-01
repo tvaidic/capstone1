@@ -1,0 +1,32 @@
+---
+title: "Capstone 1"
+author: "Vaidic Trivedi"
+date: "2023-08-26"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+df <- read.csv('C:/Users/User/Documents/Bonfire/Week8/Capstone1/df_arabica_clean.csv')
+colnames(df)<-gsub("\\.", "_", tolower(colnames(df)))
+#Ho:The country of origin determines the quality of coffee
+#Ha:The country of origin doe not determine the quality of coffee
+df <-as_tibble(df)
+coltype<- sapply(df,class)
+df$bag_weight <- as.integer(gsub('kg','', df$bag_weight))
+
+df_2<-subset(df, select = -c(x, ico_number))
+print(class(df_2))
+df_2 <- df_2 %>%
+  mutate_all(~ifelse(.=="",NA,.))
+df_2<-na.omit(df_2)
+write.csv(df_2, file ='coffee.csv',row.names=FALSE)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
